@@ -1,4 +1,5 @@
 const { storeAlgorithmMap } = require("../utils/stores");
+const { parse } = require("tldts");
 const scraper = require("../services/scraper");
 const Model = require("../models/model");
 const express = require("express");
@@ -98,11 +99,11 @@ router.get("/getCurrentPrices", async (req, res) => {
     const currentDate = new Date();
     //iterate each url
     for (const itemUrl of itemsToUpdate) {
-      const store = new URL(itemUrl).hostname.split(".")[1];
+      const store = parse(itemUrl).domainWithoutSuffix;
       // if the store is mapped, then it has an algorithm to extract the price and can be pushed to mongo
       if (store in storeAlgorithmMap) {
         //get the price
-        const price = await scraper.getPriceByUrl(itemUrl);
+        const [itemName, price] = await scraper.getPriceByUrl(itemUrl);
         //check if price was obtained
         if (price != "") {
           //check if item already exists
@@ -110,7 +111,7 @@ router.get("/getCurrentPrices", async (req, res) => {
           //if item doesnt exist, create it
           if (!currentItem) {
             const newItem = await Model.create({
-              item: store, //placeholder for now
+              item: itemName,
               store: {
                 name: store,
                 url: itemUrl,
@@ -183,15 +184,21 @@ router.get("/getCurrentPricesTest", async (req, res) => {
     const itemsToUpdate = req.body.urls;
     //iterate each url
     for (const itemUrl of itemsToUpdate) {
-      const store = new URL(itemUrl).hostname.split(".")[1];
+      const store = parse(itemUrl).domainWithoutSuffix;
       // if the store is mapped, then it has an algorithm to extract the price
       if (store in storeAlgorithmMap) {
-        const price = await scraper.getPriceByUrl(itemUrl);
-        result.push({ store: store, url: itemUrl, price: price });
+        const [itemName, price] = await scraper.getPriceByUrl(itemUrl);
+        result.push({
+          store: store,
+          url: itemUrl,
+          itemName: itemName,
+          price: price,
+        });
       } else {
         result.push({
           store: store,
           url: itemUrl,
+          itemName: "marca no mappeada",
           price: "marca no mappeada",
         });
       }
@@ -200,4 +207,10 @@ router.get("/getCurrentPricesTest", async (req, res) => {
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
+});
+
+router.get("/getStores", (req, res) => {
+  const stores = new Set(Object.values(storeAlgorithmMap));
+  console.log(stores);
+  res.send(Array.from(stores));
 });

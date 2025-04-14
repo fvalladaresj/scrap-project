@@ -1,15 +1,16 @@
 const ScrapingAlgorithm = {
-  Default: "default",
-  Tramontina: "Tramontina",
   MercadoLibre: "Mercado Libre",
+  Rosen: "Rosen",
+  Skechers: "Skechers",
+  Tramontina: "Tramontina",
 };
 
 const storeAlgorithmMap = {
-  skechers: ScrapingAlgorithm.Default,
+  mercadolibre: ScrapingAlgorithm.MercadoLibre,
+  rosen: ScrapingAlgorithm.Rosen,
+  skechers: ScrapingAlgorithm.Skechers,
   tramontinastore: ScrapingAlgorithm.Tramontina,
   tramontina: ScrapingAlgorithm.Tramontina,
-  rosen: ScrapingAlgorithm.Default,
-  mercadolibre: ScrapingAlgorithm.MercadoLibre,
 };
 
 module.exports = { ScrapingAlgorithm, storeAlgorithmMap };

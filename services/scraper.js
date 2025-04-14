@@ -1,11 +1,10 @@
 const { storeAlgorithmMap, ScrapingAlgorithm } = require("../utils/stores");
-
+const { parse } = require("tldts");
 const cheerio = require("cheerio");
 const axios = require("axios");
-const fs = require("fs");
 
 async function getPriceByUrl(url) {
-  const store = new URL(url).hostname.split(".")[1];
+  const store = parse(url).domainWithoutSuffix;
   const algorithm = storeAlgorithmMap[store] || ScrapingAlgorithm.Default;
 
   const priceRegex = /\$\d{1,3}(?:\.\d{3})*/g;
@@ -13,17 +12,23 @@ async function getPriceByUrl(url) {
   try {
     const { data: html } = await axios.get(url);
     let price = "";
+    let itemName = "";
     const $ = cheerio.load(html);
     $(
       'script, style, [style*="display:none"], [style*="display: none"]'
     ).remove();
     switch (algorithm) {
       case ScrapingAlgorithm.MercadoLibre:
-        price = $('meta[itemprop="price"]')
-          .closest(".andes-money-amount")
-          .find(".andes-money-amount__fraction")
-          .text()
-          .trim();
+        price = $('meta[itemprop="price"]').attr("content");
+        itemName = $(".ui-pdp-title").text();
+        break;
+      case ScrapingAlgorithm.Rosen:
+        price = $("body").text().match(priceRegex)[0];
+        itemName = $('meta[property="og:title"]').attr("content");
+        break;
+      case ScrapingAlgorithm.Skechers:
+        price = $("body").text().match(priceRegex)[0];
+        itemName = $('meta[itemprop="name"]').attr("content");
         break;
       case ScrapingAlgorithm.Tramontina:
         price = $(
@@ -31,12 +36,15 @@ async function getPriceByUrl(url) {
         )
           .text()
           .trim();
+        itemName = $('meta[property="og:title"]')
+          .attr("content")
+          .replace(" - Tramontina Store", "");
         break;
       default:
         price = $("body").text().match(priceRegex)[0]; // get full visible text
         break;
     }
-    return price.replace(/[$.,]/g, "");
+    return [itemName, price.replace(/[$.,]/g, "")];
   } catch (err) {
     console.error("Error scraping:", err.message);
     return [];
