@@ -18,6 +18,21 @@ const app = express();
 
 app.use(express.json());
 
+const basicAuth = require("basic-auth");
+app.use((req, res, next) => {
+  const user = basicAuth(req);
+  if (
+    !user ||
+    user.name !== process.env.AUTH_USER ||
+    user.pass !== process.env.AUTH_PASSWORD
+  ) {
+    res.status(401).send("Authentication failed.");
+    return;
+  }
+  // User is authenticated, proceed to the next middleware or route handler
+  next();
+});
+
 app.listen(3000, () => {
   console.log(`Server Started at ${3000}`);
 });
