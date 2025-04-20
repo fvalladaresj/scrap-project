@@ -16,6 +16,8 @@ router.post("/post", async (req, res) => {
     },
     lowestPrice: req.body.price,
     lowestPriceDate: new Date(),
+    highestPrice: req.body.price,
+    highestPriceDate: new Date(),
   });
   try {
     const itemToSave = await item.save();
@@ -40,7 +42,12 @@ router.get("/getByUrl", async (req, res) => {
   const storeUrl = req.query.url;
   try {
     const item = await Model.findOne({ "store.url": storeUrl });
-    res.json({ price: item.lowestPrice, date: item.lowestPriceDate });
+    res.json({
+      lowestPrice: item.lowestPrice,
+      lowestPriceDate: item.lowestPriceDate,
+      highestPrice: item.highestPrice,
+      highestPriceDate: item.highestPriceDate,
+    });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -118,6 +125,8 @@ router.get("/getCurrentPrices", async (req, res) => {
               },
               lowestPrice: price,
               lowestPriceDate: currentDate,
+              highestPrice: price,
+              highestPriceDate: currentDate,
               priceHistory: {
                 price: price,
                 startDate: currentDate,
@@ -146,6 +155,14 @@ router.get("/getCurrentPrices", async (req, res) => {
               if (!currentItem.lowestPrice || price < currentItem.lowestPrice) {
                 currentItem.lowestPrice = price;
                 currentItem.lowestPriceDate = currentDate;
+              }
+              //also check if the new price is highest and update
+              if (
+                !currentItem.highestPrice ||
+                price > currentItem.highestPrice
+              ) {
+                currentItem.highestPrice = price;
+                currentItem.highestPriceDate = currentDate;
               }
             }
             //if the new price is the same then no changes are needed

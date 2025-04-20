@@ -45,6 +45,14 @@ const itemSchema = new mongoose.Schema(
       type: Date,
       required: false,
     },
+    highestPrice: {
+      type: Number,
+      required: false,
+    },
+    highestPriceDate: {
+      type: Date,
+      required: false,
+    },
     priceHistory: {
       type: [priceHistorySchema],
       default: [],
