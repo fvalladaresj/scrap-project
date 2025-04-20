@@ -29,8 +29,6 @@ async function getPriceByUrl(url) {
         [itemName, price] = $('meta[property="og:title"]')
           .attr("content")
           .split(" - ");
-        console.log($('meta[property="og:title"]').attr("content"));
-        console.log($('meta[itemprop="price"]').attr("content"));
         break;
       case ScrapingAlgorithm.Rosen:
         price = $('meta[itemprop="price"]').attr("content");
