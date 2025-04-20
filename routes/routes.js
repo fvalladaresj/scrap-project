@@ -1,4 +1,4 @@
-const { storeAlgorithmMap } = require("../utils/stores");
+const { storeAlgorithmMap, ScrapingAlgorithm } = require("../utils/stores");
 const { parse } = require("tldts");
 const scraper = require("../services/scraper");
 const Model = require("../models/model");
@@ -210,7 +210,6 @@ router.get("/getCurrentPricesTest", async (req, res) => {
 });
 
 router.get("/getStores", (req, res) => {
-  const stores = new Set(Object.values(storeAlgorithmMap));
-  console.log(stores);
-  res.send(Array.from(stores));
+  const stores = Object.values(ScrapingAlgorithm);
+  res.send(stores);
 });
