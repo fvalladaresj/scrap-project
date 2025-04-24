@@ -11,4 +11,4 @@ jobs:
       - name: GET item by url
         run: |
           AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
-          curl -H "Authorization: Basic $AUTH" https://example.com/your-endpoint
+          curl -H "Authorization: Basic $AUTH" https://scrap-project-glgt.onrender.com/api/getByUrl?url=https%3A%2F%2Fwww.tramontina.cl%2Fsarten-tramontina-grano-de-acero-inoxidable-cuerpo-triple-con-mango-20-cm-12-l-62155200%2Fp
