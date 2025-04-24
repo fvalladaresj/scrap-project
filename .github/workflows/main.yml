@@ -14,4 +14,7 @@ jobs:
       - name: GET item by url
         run: |
           AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
-          curl -d '{"urls": ["https://www.skechers.cl/detalle/women-s-skechers-slip-ins-dynamight-2-0-daily-adventure-5"]}' -H "Authorization: Basic $AUTH" https://scrap-project-glgt.onrender.com/api/getCurrentPrices
+          curl -X POST https://scrap-project-glgt.onrender.com/api/getCurrentPrices \
+              -H "Authorization: Basic $AUTH" \
+              -H "Content-Type: application/json" \
+              -d '{"urls": ["https://www.skechers.cl/detalle/women-s-skechers-slip-ins-dynamight-2-0-daily-adventure-5"]}'
