@@ -98,7 +98,7 @@ router.delete("/deleteByUrl", async (req, res) => {
   }
 });
 
-router.get("/getCurrentPrices", async (req, res) => {
+router.post("/getCurrentPrices", async (req, res) => {
   try {
     const success = [];
     const fail = [];
