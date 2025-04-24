@@ -1,0 +1,17 @@
+name: Cron-job
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 9 * * *"
+
+jobs:
+  cron-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log time
+        run: echo "Cron-job triggered at $(date)"
+      - name: GET item by url
+        run: |
+          AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
+          curl -d '{"urls": ["https://www.skechers.cl/detalle/women-s-skechers-slip-ins-dynamight-2-0-daily-adventure-5"]}' -H "Authorization: Basic $AUTH" https://scrap-project-glgt.onrender.com/api/getCurrentPrices
