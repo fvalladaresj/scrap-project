@@ -3,7 +3,7 @@ name: Cron-job
 on:
   workflow_dispatch:
   schedule:
-    - cron: "45 22 * * *"
+    - cron: "0 9 * * *"
 
 jobs:
   cron-job:
@@ -14,4 +14,4 @@ jobs:
       - name: GET item by url
         run: |
           AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
-          curl -H "Authorization: Basic $AUTH" https://scrap-project-glgt.onrender.com/api/getByUrl?url=https%3A%2F%2Fwww.tramontina.cl%2Fsarten-tramontina-grano-de-acero-inoxidable-cuerpo-triple-con-mango-20-cm-12-l-62155200%2Fp
+          curl -d '{"urls": ["https://www.skechers.cl/detalle/women-s-skechers-slip-ins-dynamight-2-0-daily-adventure-5"]}' -H "Authorization: Basic $AUTH" https://scrap-project-glgt.onrender.com/api/getCurrentPrices
