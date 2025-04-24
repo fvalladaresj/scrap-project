@@ -1,0 +1,14 @@
+name: Cron-job
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+
+jobs:
+  cron-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: GET item by url
+        run: |
+          AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
+          curl -H "Authorization: Basic $AUTH" https://example.com/your-endpoint
