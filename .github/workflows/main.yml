@@ -1,0 +1,20 @@
+name: Cron-job
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 12 */2 * *"
+
+jobs:
+  cron-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log time
+        run: echo "Cron-job triggered at $(date)"
+      - name: GET items by url
+        run: |
+          AUTH=$(echo -n "${{ secrets.AUTH_USERNAME }}:${{ secrets.AUTH_PASSWORD }}" | base64)
+          curl -X POST ${{secrets.URL}} \
+              -H "Authorization: Basic $AUTH" \
+              -H "Content-Type: application/json" \
+              -d '{"urls": ${{secrets.LINKS}}'
