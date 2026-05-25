@@ -17,4 +17,4 @@ jobs:
           curl -X POST ${{secrets.URL}} \
               -H "Authorization: Basic $AUTH" \
               -H "Content-Type: application/json" \
-              -d '{"urls": ${{secrets.LINKS}}'
+              -d '{"urls": ${{secrets.LINKS}}}'
