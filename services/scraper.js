@@ -39,10 +39,15 @@ export const getPriceByUrl = async (url) => {
         itemName = $('meta[itemprop="name"]').attr("content");
         break;
       case ScrapingAlgorithm.Tramontina:
+        let browserTramontina = await puppeteer.launch({executablePath: "/usr/bin/chromium", headless: true});
+        const pageTramontina = await browserTramontina.newPage();
+        await pageTramontina.goto(url, { waitUntil: 'networkidle0' });
+        html = await pageTramontina.content();
+        $ = cheerio.load(html);
+
         price = $('meta[property="product:price:amount"]').attr("content");
-        itemName = $('meta[property="og:title"]')
-          .attr("content")
-          .replace(" - Tramontina Store", "");
+        await browserTramontina.close();
+        itemName = $('meta[property="og:title"]').attr("content").replace(" - Tramontina Store", "");
         break;
       case ScrapingAlgorithm.Jumbo:
         let browserJumbo = await puppeteer.launch({ headless: "new" });
